@@ -1,0 +1,45 @@
+# Build output and local SDK/cache
+**/bin/
+**/obj/
+.tools/
+dist/
+logs/
+.work/
+.cache/
+.old/
+.update/
+build/Pocket Native/
+Pocket Native/
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+*.tmp
+*.log
+*.bak
+
+# NEVER commit commercial games, console secrets, savedata, or certificates
+*.3ds
+*.3dz
+*.cci
+*.cia
+*.cxi
+*.3dsx
+*.tik
+*aes_keys*.txt
+*seeddb*.bin
+*movable.sed
+*boot9.bin
+*otp.bin
+*.pfx
+*.p12
+*.pem
+*.key
+**/games/*/game.3ds
+**/games/*/data/
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store

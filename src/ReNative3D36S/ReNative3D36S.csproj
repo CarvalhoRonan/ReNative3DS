@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>ReNative3D36S</AssemblyName>
+    <ApplicationIcon>Assets\ReNative3D36S.ico</ApplicationIcon>
+    <Version>0.2.0</Version>
+  </PropertyGroup>
+  <ItemGroup>
+    <Resource Include="Assets\*.png" />
+    <Resource Include="Assets\ReNative3D36S.ico" />
+    <EmbeddedResource Include="Locales\*.json" />
+  </ItemGroup>
+</Project>

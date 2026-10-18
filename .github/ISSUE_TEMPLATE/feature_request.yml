@@ -1,0 +1,16 @@
+name: Feature request / Sugestão
+description: Suggest an improvement to the frontend.
+title: "[FEATURE] "
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: Problem to solve
+      description: What user task would become easier?
+    validations:
+      required: true
+  - type: textarea
+    id: approach
+    attributes:
+      label: Proposed behavior
+      description: Describe the change and any compatibility considerations.

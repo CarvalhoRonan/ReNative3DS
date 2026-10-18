@@ -1,0 +1,44 @@
+name: Bug report / Reportar problema
+description: Share a reproducible problem without private content.
+title: "[BUG] "
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Building the Windows GUI
+        - Environment / Docker
+        - CIA / 3DS conversion
+        - Game recompilation
+        - SD card / R36S
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: ReNative3D36S version
+      placeholder: v0.1.7
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps and expected behavior
+      placeholder: What did you do, what happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant redacted log excerpts
+      description: Never attach ROMs, AES keys, console dumps, credentials or personal file paths.
+      render: text
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy confirmation
+      options:
+        - label: I removed keys, ROM data, secrets and personal details from my report.
+          required: true

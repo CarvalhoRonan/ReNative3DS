@@ -1,0 +1,74 @@
+name: Windows build & experimental release
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build_windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Restore official NuGet packages
+        shell: pwsh
+        run: dotnet restore src/ReNative3D36S/ReNative3D36S.csproj --runtime win-x64 --configfile NuGet.Config -p:PublishSelfContained=true -p:PublishSingleFile=true -p:PublishTrimmed=false
+      - name: Publish standalone Windows GUI
+        shell: pwsh
+        run: dotnet publish src/ReNative3D36S/ReNative3D36S.csproj --no-restore -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=false -p:EnableCompressionInSingleFile=true -p:DebugType=None -o dist/portable
+      - name: Package and verify executable
+        shell: pwsh
+        run: |
+          $exe = 'dist/portable/ReNative3D36S.exe'
+          if (!(Test-Path $exe)) { throw 'ReNative3D36S.exe was not generated' }
+          if ((Get-Item $exe).Length -lt 500000) { throw 'Generated EXE is unexpectedly small' }
+          Compress-Archive -Path 'dist/portable/*' -DestinationPath 'ReNative3D36S-Windows-x64-TESTE.zip' -Force
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ReNative3D36S-Windows-x64-TESTE
+          path: ReNative3D36S-Windows-x64-TESTE.zip
+          if-no-files-found: error
+          retention-days: 30
+
+  source_release:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publish source pre-release for this version
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          if gh release view v0.2.0-beta.1 >/dev/null 2>&1; then
+            echo 'Pre-release already exists; not replacing it.'
+          else
+            gh release create v0.2.0-beta.1 --target "$COMMIT_SHA" --title 'ReNative3D36S v0.2.0 beta 1 (experimental)' --prerelease --notes-file docs/RELEASE-NOTES-v0.2.0-beta.1.md
+          fi
+
+  attach_binary:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [build_windows, source_release]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ReNative3D36S-Windows-x64-TESTE
+      - name: Attach experimental Windows build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: gh release upload v0.2.0-beta.1 ReNative3D36S-Windows-x64-TESTE.zip --clobber
